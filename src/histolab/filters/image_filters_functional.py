@@ -29,6 +29,7 @@ import skimage.exposure as sk_exposure
 import skimage.feature as sk_feature
 import skimage.filters as sk_filters
 import skimage.future as sk_future
+import skimage.graph as sk_graph
 import skimage.morphology as sk_morphology
 import skimage.segmentation as sk_segmentation
 
@@ -460,8 +461,8 @@ def rag_threshold(
         mask=mask,
         start_label=0 if mask is None else 1,
     )
-    green = sk_future.graph.rag_mean_color(img_arr, labels)
-    labels2 = sk_future.graph.cut_threshold(labels, green, threshold)
+    green = sk_graph.rag_mean_color(img_arr, labels)
+    labels2 = sk_graph.cut_threshold(labels, green, threshold)
     if return_labels:
         return labels2
     rag = sk_color.label2rgb(labels2, img_arr, kind="avg", bg_label=-1)
