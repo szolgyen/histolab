@@ -460,6 +460,7 @@ def rag_threshold(
         compactness,
         mask=mask,
         start_label=0 if mask is None else 1,
+        channel_axis=2
     )
     green = sk_graph.rag_mean_color(img_arr, labels)
     labels2 = sk_graph.cut_threshold(labels, green, threshold)
