@@ -517,7 +517,17 @@ class GridTiler(Tiler):
         Iterator[CoordinatePair]
             Iterator of tiles' CoordinatePair
         """
-        binary_mask = extraction_mask(slide)
+        slide_extension = slide._path.split(".")[-1]
+        if slide_extension == "mrxs":
+            # Remove black pixels from thumbnail
+            _thumb = slide.thumbnail
+            thumb = np.array(_thumb, dtype=np.uint8)
+            thumb_mask = np.all(thumb == [0, 0, 0], axis=-1)
+            thumb[thumb_mask] = [255, 255, 255]
+            thumb = PIL.Image.fromarray(thumb)
+            binary_mask = extraction_mask._thumb_mask(slide, thumb=thumb)
+        else:
+            binary_mask = extraction_mask(slide)
 
         regions = regions_from_binary_mask(binary_mask)
         for region in regions:
@@ -1102,7 +1112,7 @@ class ScoreTiler(GridTiler):
 
     @staticmethod
     def _scale_scores(
-        scores: List[Tuple[float, CoordinatePair]]
+        scores: List[Tuple[float, CoordinatePair]],
     ) -> List[Tuple[float, CoordinatePair]]:
         """Scale scores between 0 and 1.
 
